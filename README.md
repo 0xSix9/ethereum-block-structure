@@ -29,9 +29,8 @@ Every Ethereum block consists of two main parts: the **Header** and the **Body**
 20. [Parent Beacon Block Root](./header/parent-beacon-block-root.md)
 
 # Body
+
 1. [Transactions](./body/transactions.md)
 2. [Ommers (Uncles)](./body/ommers.md)
 3. [Withdrawals](./body/withdrawals.md)
 4. [Blob Transactions](./body/blob-transactions.md)
-20. [Excess Blob Gas](./header/excess-blob-gas.md)
-21. [Parent Beacon Block Root](./header/parent-beacon-block-root.md)
