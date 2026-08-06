@@ -7,9 +7,6 @@ This repository provides a clear breakdown of the internal structure of an Ether
 
 Every Ethereum block consists of two main parts: the **Header** and the **Body**.
 #  Header
-
-In order :
-
 1. [Parent Hash](./header/parent-hash.md)
 2. [Ommers Hash](./header/ommers-hash.md)
 3. [Fee Recipient](./header/fee-recipient.md)
