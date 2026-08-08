@@ -1,5 +1,5 @@
 # Parent Hash
-
+![ Parent Hash](https://github.com/0xSix9/ethereum-block-structure/blob/80e001a24e22902841a666a87d7df923a6f222bc/images/Parent-Hash.png) 
 ## Definition
 
 **Parent Hash** is one of the most important fields in the Ethereum block header. It stores the complete hash of the previous block's header (the parent block), and it is literally the mechanism that turns individual blocks into a **chain**.
