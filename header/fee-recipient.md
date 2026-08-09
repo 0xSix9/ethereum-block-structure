@@ -1,5 +1,5 @@
 # Fee Recipient
-
+![Fee Recipient](https://github.com/0xSix9/ethereum-block-structure/blob/438a7caa9bef488b30f4464c4da30e3f9bed3d5a/images/FeeRecipient.png)
 ## Definition
 
 **Fee Recipient** is a field in the Ethereum execution block header that
