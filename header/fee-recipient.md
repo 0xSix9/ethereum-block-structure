@@ -2,66 +2,135 @@
 
 ## Definition
 
-**Fee Recipient** (also known as **Coinbase** in older terminology) is the field in the Ethereum block header that holds the address entitled to receive the block reward — the account that gets credited for successfully producing the block.
+**Fee Recipient** is a field in the Ethereum execution block header that
+specifies the **Ethereum address that receives the priority fees (tips)
+from transactions included in the block**.
 
-- **Data type:** 20 bytes (a standard Ethereum address)
-- **Position:** Third field in the block header
-- **Present since:** The Genesis block
-- **Alternate name:** Coinbase (used in pre-Merge terminology and in many client codebases)
+It is a standard Ethereum address of **20 bytes**.
 
-## Role in the Block
+``` text
+FeeRecipient = 0x...
+```
 
-The role of Fee Recipient is simple but essential: it tells the network **who gets paid** for producing this specific block. Every block that gets added to the chain results in some value being transferred to this address — historically the block reward plus transaction fees under Proof-of-Work, and today primarily priority fees (tips) under Proof-of-Stake.
-
-Without this field, there would be no way for the protocol to know which account should be credited when a block is successfully proposed and included in the chain.
+The address is chosen by the entity responsible for proposing/building
+the block and does **not necessarily have to be the validator's own
+address**.
 
 ## How It Works
 
-When a block is produced, the entity responsible for building it — a miner under Proof-of-Work, or a validator under Proof-of-Stake — specifies an address in the Fee Recipient field. The Ethereum protocol then routes certain payments to that address as part of block processing:
+When users send transactions on Ethereum, they pay transaction fees.
+Under EIP-1559, these fees are divided into two main parts:
 
-```
-Block.FeeRecipient = <address chosen by the block producer>
-```
-
-This address doesn't have to belong to the actual miner or validator directly — it's common for staking pools or mining pools to set the Fee Recipient to a pool-controlled address, which later distributes rewards to individual participants.
-
-## What Gets Paid to the Fee Recipient?
-
-### Under Proof-of-Work (pre-Merge)
-- **Static block reward** — a fixed amount of ETH for each mined block (this changed over time due to protocol upgrades like the "Ice Age" and various reward reductions).
-- **Transaction fees** — the gas fees paid by users for the transactions included in the block.
-- **Ommer rewards** — a smaller reward for referencing valid-but-excluded sibling blocks.
-
-### Under Proof-of-Stake (post-Merge)
-- **Priority fees (tips)** — Since EIP-1559, transaction fees are split into a base fee (which is burned) and a priority fee (which goes to the Fee Recipient). There is no more static block reward paid through this field; validator staking rewards are instead issued on the consensus layer (the Beacon Chain), separate from the execution-layer Fee Recipient mechanism.
-
-## Why This Field Matters
-
-### 1. Economic Incentive for Block Production
-
-Fee Recipient is what makes block production economically worthwhile. Whether mining or validating, someone is doing real work (computational or capital-based) to secure the network, and this field ensures they get compensated.
-
-### 2. Enables Pooled Rewards
-
-Because Fee Recipient can point to any address, mining pools and staking pools can aggregate rewards from many blocks into a single address, then distribute them proportionally to their participants.
-
-### 3. Transparency of Block Rewards
-
-Since this field is public and part of the block header, anyone can verify exactly which address benefited from any given block — making block rewards fully auditable on-chain.
-
-## Simple Example
-
-```
-Block #19,500,000:
-  Fee Recipient: 0x4838B106fCe9647Bdf1E7877BF73cE8B0BAD5f97
-  ...
+``` text
+Transaction Fee
+      │
+      ├── Base Fee ──────► Burned
+      │
+      └── Priority Fee ──► Fee Recipient
 ```
 
-If this block includes transactions paying a total of 0.05 ETH in priority fees, that amount is credited to the address `0x4838B1...` as part of processing this block.
+The **base fee** is burned, while the **priority fee (tip)** is paid to
+the address specified by the block's `feeRecipient`.
 
-## Relationship to Other Fields
+For example, if the block contains transactions that collectively pay:
 
-Fee Recipient works closely with **Base Fee Per Gas** (introduced by EIP-1559): the base fee is burned and removed from circulation, while the priority fee — the portion users pay on top of the base fee to incentivize faster inclusion — is what actually reaches the Fee Recipient.
+``` text
+Priority Fees = 0.05 ETH
+```
+
+and the block contains:
+
+``` text
+feeRecipient = 0xABC...123
+```
+
+then the `0.05 ETH` in priority fees is credited to:
+
+``` text
+0xABC...123
+```
+
+## What Is the Relationship With the Validator?
+
+This is where `Fee Recipient` is often misunderstood.
+
+The validator that proposes the block **can choose an address to receive
+the priority fees**. This address may be:
+
+-   the validator's own Ethereum address
+-   a staking-pool address
+-   another address controlled by the validator or its infrastructure
+
+Therefore:
+
+> **`feeRecipient` identifies the destination of the block's priority
+> fees, not necessarily the identity of the validator.**
+
+## What About Validator Rewards?
+
+The `feeRecipient` should **not** be confused with the validator's
+consensus rewards.
+
+After **The Merge**, Ethereum uses Proof-of-Stake. The validator
+receives consensus-layer rewards through the Beacon Chain, while the
+execution-layer `feeRecipient` is primarily concerned with **priority
+fees from transactions**.
+
+So there are two separate concepts:
+
+``` text
+                 Validator
+                    │
+          ┌─────────┴─────────┐
+          │                   │
+          ▼                   ▼
+ Consensus Rewards       Priority Fees
+ Beacon Chain             Execution Layer
+                              │
+                              ▼
+                       feeRecipient
+```
+
+## Why Is It Stored in the Block?
+
+The `feeRecipient` field makes the intended destination of priority fees
+part of the block's execution payload.
+
+When the block is processed, the Ethereum execution layer knows which
+address should receive the priority fees generated by the transactions
+in that block.
+
+This makes the payment destination **explicit and verifiable from the
+block itself**.
+
+## Example
+
+Suppose a block contains 100 transactions.
+
+The transactions collectively generate:
+
+``` text
+Base Fee:       1.20 ETH
+Priority Fees:  0.08 ETH
+```
+
+Ethereum processes them as:
+
+``` text
+1.20 ETH  ─────► Burned
+
+0.08 ETH  ─────► feeRecipient
+                 0x4838...5f97
+```
+
+Therefore, the `feeRecipient` address receives the **0.08 ETH priority
+fees**, while the 1.20 ETH base fee is burned.
+
+## In One Sentence
+
+> **The `feeRecipient` field specifies the address that receives the
+> priority fees (tips) generated by the transactions included in an
+> Ethereum block.**
 
 ## References
 
