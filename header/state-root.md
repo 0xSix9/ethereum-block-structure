@@ -1,5 +1,5 @@
 # What Is the State Root in an Ethereum Block?
-
+![State Root](https://github.com/0xSix9/ethereum-block-structure/blob/2f11d5d1e2d7f96dd0cc9f0bebff4cf3ad8ed37c/images/state-root.png)
 The **`stateRoot`** is one of the most important fields in the **Ethereum block header**. It is a 32-byte Keccak-256 hash that represents the root of Ethereum’s global **state trie** after all transactions and other state-changing operations in the block have been executed.
 
 ## What Is Ethereum’s State?
