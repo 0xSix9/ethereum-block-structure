@@ -1,5 +1,5 @@
 ## Transactions Root
-
+![transactions root](https://github.com/0xSix9/ethereum-block-structure/blob/91ebd28a9a6cb4c8aa2ba71f329a0c0b2def90ea/images/Transactions-Root.png)
 The **Transactions Root** is a field in the Ethereum block header that contains the root hash of the **Merkle Patricia Trie (MPT)** storing all transactions included in the block.
 
 Each transaction in a block is organized inside the transaction trie. The trie structure is then hashed, producing a single value called the **Transactions Root**. This root hash is stored in the block header.
