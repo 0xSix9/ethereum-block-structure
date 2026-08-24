@@ -1,5 +1,5 @@
 # What Is the `receiptsRoot` in an Ethereum Block Header?
-
+![Receipts Root](https://github.com/0xSix9/ethereum-block-structure/blob/74c94bda431746f2833f2debf8d44342546a1d95/images/receipts-root.png)
 When studying the Ethereum block structure, you will encounter several important **root hashes** inside the block header.
 
 Three of the most important are:
