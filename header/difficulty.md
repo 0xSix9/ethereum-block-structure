@@ -1,5 +1,5 @@
 # Ethereum's `difficulty`: What It Meant in Proof-of-Work and What It Means Today
-
+![difficulty](https://github.com/0xSix9/ethereum-block-structure/blob/9092877d87986910f1b25ce8e792d7a949619ce5/images/difficulty.png)
 When you look at the Ethereum block header, you will find a field called **`difficulty`**.
 
 This field is closely connected to one of the biggest changes in Ethereum's history: the transition from **Proof-of-Work (PoW)** to **Proof-of-Stake (PoS)**.
