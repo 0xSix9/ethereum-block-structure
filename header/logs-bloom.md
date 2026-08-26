@@ -1,5 +1,5 @@
 # Ethereum's `logsBloom`: How a Block Quickly Reveals Relevant Events
-
+![logsbloom](https://github.com/0xSix9/ethereum-block-structure/blob/a21f41373ff8fca99413fce715a3c6cb2a174895/images/logsbloom.png)
 When you look at the structure of an Ethereum block header, you will find a field called **`logsBloom`**.
 
 At first glance, it looks like a huge collection of random hexadecimal characters. But it has an important purpose:
