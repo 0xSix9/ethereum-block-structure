@@ -1,5 +1,5 @@
 # Ethereum's `blockNumber`: The Identity of a Block's Position in the Chain
-
+![blocknumber](https://github.com/0xSix9/ethereum-block-structure/blob/bbc937c10872ac0ec5b6f8dda46855dca52611e3/images/blocknumber.png)
 When you look at the structure of an Ethereum block, you will find a field called **`blockNumber`** (often written as `number` in the execution-layer block header).
 
 It has a very simple job:
