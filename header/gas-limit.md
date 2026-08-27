@@ -1,5 +1,5 @@
 # Ethereum’s `gasLimit`: The Block Header Field That Controls Block Capacity
-
+![gas limit](https://github.com/0xSix9/ethereum-block-structure/blob/0dcf64da98650ad2cd7b0e817e8a53bb71509865/images/gaslimit.png)
 When you look at the structure of an Ethereum block header, you will find a field called **`gasLimit`**.
 
 This field has an important role in controlling how much computation can be included inside a single Ethereum block.
