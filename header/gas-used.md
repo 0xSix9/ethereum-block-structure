@@ -1,5 +1,5 @@
 # Ethereum’s `gasUsed`: How Much Computation a Block Actually Consumed
-
+![gas used](https://github.com/0xSix9/ethereum-block-structure/blob/d4dbcb862191b7c09ebfe5295597a1b0aab1eff0/images/gas-used.png)
 When you look at the structure of an Ethereum block header, you will find a field called **`gasUsed`**.
 
 This field tells us something very simple but important:
