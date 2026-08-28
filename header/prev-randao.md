@@ -1,5 +1,5 @@
 # Ethereum Block Header Explained: What Is prevRandao?
-
+![PrevRandao](https://github.com/0xSix9/ethereum-block-structure/blob/4222f3fd5632198082360d2947644faed2cd38f0/images/PrevRandao.png)
 When people first study the Ethereum block header, fields such as `timestamp`, `gasLimit`, `gasUsed`, and `baseFeePerGas` are relatively easy to understand.
 
 But one field is particularly interesting because it connects the **Execution Layer** with Ethereum's Proof of Stake consensus mechanism:
