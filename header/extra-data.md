@@ -1,5 +1,5 @@
 # Understanding Ethereum’s Extra Data Field: A Deep Dive into Block Header Metadata
-
+![Extra Data](https://github.com/0xSix9/ethereum-block-structure/blob/8d194d7871e7149c669712f8984e6073b6c38607/images/Extra-Data.png)
 Ethereum blocks are made of multiple components that work together to maintain the security, consistency, and transparency of the network. While most developers focus on transactions, smart contracts, and state changes, the internal structure of an Ethereum block contains many important fields that define how the blockchain works.
 
 One of these fields is **Extra Data**, a small but interesting part of the Ethereum block header.
