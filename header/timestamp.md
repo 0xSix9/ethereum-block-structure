@@ -1,5 +1,5 @@
 # Timestamp in Blockchain: Understanding Time Inside Ethereum Blocks
-
+![timestamp](https://github.com/0xSix9/ethereum-block-structure/blob/ff40f8421b63e7d4e5245789db7b02f46c0b4384/images/Timestamp.png)
 Time is an important concept in every distributed system. Computers need a way to organize events, compare changes, and understand the order in which things happen.
 
 However, in decentralized networks like Ethereum, there is no single central clock that all participants trust.
