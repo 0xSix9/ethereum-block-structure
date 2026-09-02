@@ -1,5 +1,5 @@
 # Base Fee Per Gas in Ethereum Block Headers
-
+![base fee per gas](https://github.com/0xSix9/ethereum-block-structure/blob/021c4ad8b0fb551cb4b1e427cd26eb6eb4ef3e9b/images/base-fee-per-gas.png)
 Ethereum blocks contain a block header with important information that allows nodes to verify and understand the state of the blockchain. One of the fields introduced by **EIP-1559** is `base_fee_per_gas`, which fundamentally changed how transaction fees work on Ethereum.
 
 ## What Is `base_fee_per_gas`?
