@@ -1,5 +1,5 @@
 # What Is the Nonce?
-
+![nonce](https://github.com/0xSix9/ethereum-block-structure/blob/08c35d33940a50e5271993ce947ba2482b03a98d/images/nonce.png)
 When studying the Ethereum block header, you may come across a field called **Nonce**.
 
 At first glance, the field seems simple. But understanding its purpose requires looking at how Ethereum used to create blocks.
