@@ -1,5 +1,5 @@
 # Withdrawals Root in Ethereum Block Header
-
+![withdrawals root](https://github.com/0xSix9/ethereum-block-structure/blob/ecfe14a163cc295c352407e51c06fba5d24a383a/images/withdrawals-root.png)
 The **Withdrawals Root** (`withdrawalsRoot`) is a field in the Ethereum execution block header that provides a cryptographic commitment to the validator withdrawals included in a block.
 
 It was introduced by **EIP-4895** to support validator withdrawals after Ethereum transitioned to **Proof of Stake**.
