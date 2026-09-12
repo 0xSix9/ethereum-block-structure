@@ -1,5 +1,5 @@
 # Understanding `blobGasUsed` in the Ethereum Block Header
-
+![blob gas used](https://github.com/0xSix9/ethereum-block-structure/blob/2a6709f30f392fbf4f08fbad98cdb09849cef007/images/blob-gas-used.jpeg)
 ## Introduction
 
 Ethereum blocks contain a header with multiple fields that describe important information about the block and the state of the Ethereum network.
