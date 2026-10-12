@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">Understanding excessBlobGas in Ethereum</title>
+<desc id="desc">A diagram showing parent blob gas fields passing through the active fork's excess update rules, producing the next header's excessBlobGas which influences the blob base fee.</desc>
+<defs>
+ <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#061328"/><stop offset="1" stop-color="#0c2440"/></linearGradient>
+ <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#26d8f4"/><stop offset="1" stop-color="#4388ff"/></linearGradient>
+ <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#32d6f4"/></marker>
+ <style>
+ .title{font:700 34px Arial,sans-serif;fill:#f3f7ff;letter-spacing:1px}
+ .sub{font:17px Arial,sans-serif;fill:#a9c4e5}
+ .head{font:700 19px Arial,sans-serif;fill:#f3f7ff}
+ .code{font:17px 'Courier New',monospace;fill:#baf5ff}
+ .text{font:16px Arial,sans-serif;fill:#c0d4ec}
+ .small{font:14px Arial,sans-serif;fill:#8fadcf}
+ .panel{fill:#091a30;stroke:#2b6896;stroke-width:2}
+ .arrow{stroke:#32d6f4;stroke-width:3;fill:none;marker-end:url(#arrow)}
+ </style>
+</defs>
+<rect width="1200" height="720" rx="24" fill="url(#background)"/>
+<text x="48" y="64" class="title">EXCESS BLOB GAS</text>
+<text x="50" y="96" class="sub">A fee-market state in Ethereum's execution block header</text>
+<rect x="44" y="142" width="306" height="244" rx="18" class="panel"/>
+<text x="68" y="180" class="head">PARENT HEADER</text>
+<rect x="64" y="201" width="266" height="68" rx="10" fill="#0b2947" stroke="#2b6896"/>
+<text x="82" y="230" class="code">excess_blob_gas</text>
+<text x="82" y="252" class="small">previous fee-market state</text>
+<rect x="64" y="282" width="266" height="68" rx="10" fill="#0b2947" stroke="#2b6896"/>
+<text x="82" y="311" class="code">blob_gas_used</text>
+<text x="82" y="333" class="small">blob gas consumed by parent</text>
+<path d="M354 264 H397" class="arrow"/>
+<rect x="408" y="142" width="385" height="244" rx="18" fill="#101f37" stroke="#ffbd4c" stroke-width="2"/>
+<text x="432" y="180" class="head">ACTIVE FORK RULES</text>
+<text x="432" y="218" class="text">1. Add parent excess and usage</text>
+<text x="452" y="246" class="code">total = excess + blob_gas_used</text>
+<line x1="432" y1="266" x2="767" y2="266" stroke="#3b536d"/>
+<text x="432" y="294" class="text">2. Apply target and fee conditions</text>
+<text x="452" y="323" class="small">Baseline EIP-4844, plus fork-specific</text>
+<text x="452" y="346" class="small">rules such as EIP-7918 after Fusaka</text>
+<path d="M797 264 H840" class="arrow"/>
+<rect x="851" y="142" width="305" height="244" rx="18" class="panel"/>
+<text x="875" y="180" class="head">NEXT HEADER</text>
+<rect x="871" y="209" width="265" height="80" rx="10" fill="#083147" stroke="#25c9ed" stroke-width="2"/>
+<text x="888" y="242" class="code">excess_blob_gas</text>
+<text x="888" y="267" class="small">new pricing state</text>
+<text x="875" y="324" class="text">Validated against its parent</text>
+<text x="875" y="348" class="text">and the active fork's rules</text>
+<path d="M1001 390 V433 H840" class="arrow"/>
+<rect x="408" y="445" width="548" height="126" rx="18" fill="#0b2947" stroke="#8272ff" stroke-width="2"/>
+<text x="434" y="483" class="head">BLOB BASE FEE</text>
+<text x="434" y="516" class="code">fake_exponential(min_fee, excess, fraction)</text>
+<text x="434" y="545" class="text">Higher excess generally raises the blob base fee.</text>
+<path d="M682 573 V602" class="arrow"/>
+<rect x="166" y="613" width="990" height="70" rx="15" fill="#07162c" stroke="#2b6896" stroke-width="2"/>
+<text x="191" y="643" class="head">DON'T CONFUSE THE FIELDS</text>
+<text x="191" y="668" class="text">blob_gas_used = usage in one block</text>
+<text x="615" y="668" class="text">excess_blob_gas = state used for pricing</text>
+<text x="48" y="484" class="small">Separate fee market</text>
+<text x="48" y="507" class="small">from EVM gas</text>
+<text x="48" y="530" class="small">and execution.</text>
+</svg>
