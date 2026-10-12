@@ -1,5 +1,7 @@
 # Understanding `excessBlobGas` in the Ethereum Block Header
 
+![Excess blob gas: parent header, fork-specific update rules, next header, and blob base fee](../images/excess-blob-gas.svg)
+
 ## Introduction
 
 Ethereum's execution block header records protocol-critical information about a block. Since **EIP-4844 (Proto-Danksharding)**, it has also included two fields for Ethereum's separate blob-data fee market:
