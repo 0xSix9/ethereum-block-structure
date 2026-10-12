@@ -1,4 +1,4 @@
-# Understanding \`parentBeaconBlockRoot\` in the Ethereum Block Header
+# Understanding `parentBeaconBlockRoot` in the Ethereum Block Header
 
 ![Parent Beacon Block Root: how EIP-4788 connects the consensus layer to EVM contracts](../images/parent-beacon-block-root.svg)
 
@@ -9,21 +9,21 @@ Ethereum is made of two closely connected protocol layers:
 - The **Consensus Layer** coordinates validators and the Beacon Chain.
 - The **Execution Layer** processes transactions, runs the EVM, and updates account and contract state.
 
-For much of Ethereum's history, an ordinary smart contract could not directly access a cryptographic commitment to Beacon Chain history. **EIP-4788**, activated with the Dencun upgrade in March 2024, added a field called \`parentBeaconBlockRoot\` and a system contract that makes recent Beacon block roots available to EVM applications.
+For much of Ethereum's history, an ordinary smart contract could not directly access a cryptographic commitment to Beacon Chain history. **EIP-4788**, activated with the Dencun upgrade in March 2024, added a field called `parentBeaconBlockRoot` and a system contract that makes recent Beacon block roots available to EVM applications.
 
 This creates a useful bridge between consensus-layer information and execution-layer smart contracts.
 
-> **Key idea:** \`parentBeaconBlockRoot\` is a 32-byte root of a parent Beacon block. It is different from \`parentHash\`, which links an execution block to its parent execution block.
+> **Key idea:** `parentBeaconBlockRoot` is a 32-byte root of a parent Beacon block. It is different from `parentHash`, which links an execution block to its parent execution block.
 
-## 1. What Is \`parentBeaconBlockRoot\`?
+## 1. What Is `parentBeaconBlockRoot`?
 
-\`parentBeaconBlockRoot\` is a field in the Ethereum execution block header. It was introduced by **EIP-4788: Beacon block root in the EVM**.
+`parentBeaconBlockRoot` is a field in the Ethereum execution block header. It was introduced by **EIP-4788: Beacon block root in the EVM**.
 
 The value is the hash-tree-root of the **parent Beacon block** corresponding to the Beacon block that contains the execution payload. A root is a compact cryptographic commitment to the structure and contents of that Beacon block; it is not the complete block or its state.
 
 At a high level, the field allows an execution block to carry a reference to Ethereum's consensus-layer history:
 
-\`\`\`text
+```text
 Beacon Chain
      |
      | Beacon block root of the parent
@@ -32,15 +32,15 @@ parentBeaconBlockRoot
      |
      v
 Execution block header
-\`\`\`
+```
 
 The value has a fixed length of **32 bytes**.
 
 ## 2. Where Does It Appear in the Block Header?
 
-EIP-4788 added \`parent_beacon_block_root\` to the execution block header. In a simplified view of the later header fields:
+EIP-4788 added `parent_beacon_block_root` to the execution block header. In a simplified view of the later header fields:
 
-\`\`\`text
+```text
 Execution Block Header
 ├── ... existing header fields ...
 ├── base_fee_per_gas
@@ -48,24 +48,24 @@ Execution Block Header
 ├── blob_gas_used
 ├── excess_blob_gas
 └── parent_beacon_block_root
-\`\`\`
+```
 
 This is a partial diagram, not the complete header encoding. Header definitions can evolve as Ethereum upgrades, so clients must follow the specifications for the fork they validate.
 
-In execution-layer protocol specifications the field is written in snake case, \`parent_beacon_block_root\`. The JSON-RPC block representation commonly exposes it as \`parentBeaconBlockRoot\`.
+In execution-layer protocol specifications the field is written in snake case, `parent_beacon_block_root`. The JSON-RPC block representation commonly exposes it as `parentBeaconBlockRoot`.
 
-## 3. \`parentBeaconBlockRoot\` vs \`parentHash\`
+## 3. `parentBeaconBlockRoot` vs `parentHash`
 
 These names sound similar, but the fields connect different parts of Ethereum.
 
 | Field | Points to | Layer |
 |---|---|---|
-| \`parentHash\` | The parent execution block's hash | Execution Layer |
-| \`parentBeaconBlockRoot\` | The parent Beacon block's hash-tree-root | Consensus Layer |
+| `parentHash` | The parent execution block's hash | Execution Layer |
+| `parentBeaconBlockRoot` | The parent Beacon block's hash-tree-root | Consensus Layer |
 
 The distinction matters because Ethereum maintains related but different block structures at the execution and consensus layers.
 
-\`\`\`text
+```text
 Execution chain                   Beacon Chain
 ---------------                   ------------
 Execution block N                 Beacon block N
@@ -77,7 +77,7 @@ Execution block N-1               Beacon block N-1
 parentBeaconBlockRoot commits to the
 parent Beacon block, not the parent
 execution block.
-\`\`\`
+```
 
 Neither field is a replacement for the other. They commit to different structures and serve different protocol purposes.
 
@@ -91,7 +91,7 @@ EIP-4788 provides a protocol-maintained source of recent Beacon block roots. An 
 
 The key design principle is:
 
-\`\`\`text
+```text
 Consensus Layer
       |
       | Beacon block root
@@ -105,7 +105,7 @@ Beacon roots contract
       | Contract reads a root
       v
 EVM application verifies relevant proof
-\`\`\`
+```
 
 Importantly, the root does **not** automatically reveal all Beacon block data to a smart contract. The application still needs the relevant data and a proof that can be checked against the root.
 
@@ -113,17 +113,17 @@ Importantly, the root does **not** automatically reveal all Beacon block data to
 
 EIP-4788 specifies a contract deployed at a protocol-defined address:
 
-\`\`\`text
+```text
 0x000F3df6D732807Ef1319fB7B8bB8522d0Beac02
-\`\`\`
+```
 
-The contract stores Beacon block roots indexed by execution block timestamps. Ethereum performs a protocol-level system operation before ordinary user transactions are processed, supplying the execution payload timestamp and its \`parentBeaconBlockRoot\`.
+The contract stores Beacon block roots indexed by execution block timestamps. Ethereum performs a protocol-level system operation before ordinary user transactions are processed, supplying the execution payload timestamp and its `parentBeaconBlockRoot`.
 
 The contract maintains a **ring buffer**: a fixed-size collection of entries that are reused as newer timestamps arrive. The EIP specifies a history buffer length of **8,191 entries**.
 
 Conceptually:
 
-\`\`\`text
+```text
 New execution block
     |
     | timestamp + parentBeaconBlockRoot
@@ -137,7 +137,7 @@ Beacon roots contract
              |
              +--> stored timestamp
              +--> 32-byte Beacon root
-\`\`\`
+```
 
 This design avoids an ever-growing storage structure while keeping a useful window of recent roots available to contracts.
 
@@ -153,18 +153,18 @@ The 8,191-entry buffer represents roughly 27 hours if there is one execution pay
 
 The Beacon roots contract exposes a timestamp-based lookup. A simplified Solidity interface looks like this:
 
-\`\`\`solidity
+```solidity
 interface IBeaconRoots {
     function get(uint256 timestamp)
         external
         view
         returns (bytes32);
 }
-\`\`\`
+```
 
 An application can query the root associated with an available execution timestamp:
 
-\`\`\`solidity
+```solidity
 address constant BEACON_ROOTS =
     0x000F3df6D732807Ef1319fB7B8bB8522d0Beac02;
 
@@ -175,7 +175,7 @@ function getCurrentBlockParentBeaconRoot()
 {
     return IBeaconRoots(BEACON_ROOTS).get(block.timestamp);
 }
-\`\`\`
+```
 
 This example demonstrates how the contract can be called; production code should include the full interface, error handling, tests, and assumptions appropriate to the application. A lookup only works when that timestamp is available in the buffer.
 
@@ -218,7 +218,7 @@ EIP-4788 exposes recent roots to the EVM. It does not, by itself, implement a ge
 
 ## 9. Why Developers Should Understand It
 
-For a smart-contract developer, \`parentBeaconBlockRoot\` is a good example of how Ethereum's execution and consensus layers interact.
+For a smart-contract developer, `parentBeaconBlockRoot` is a good example of how Ethereum's execution and consensus layers interact.
 
 It is useful when you:
 
@@ -232,13 +232,13 @@ It also highlights an important architectural lesson: exposing a cryptographic c
 
 ## Conclusion
 
-\`parentBeaconBlockRoot\` is a 32-byte execution block-header field introduced by EIP-4788. It commits to the parent Beacon block and provides a protocol-maintained link from execution-layer blocks to consensus-layer history.
+`parentBeaconBlockRoot` is a 32-byte execution block-header field introduced by EIP-4788. It commits to the parent Beacon block and provides a protocol-maintained link from execution-layer blocks to consensus-layer history.
 
-EIP-4788 also adds a Beacon roots contract at \`0x000F3df6D732807Ef1319fB7B8bB8522d0Beac02\`. A protocol-level system operation stores a root together with its timestamp in a fixed-size ring buffer, allowing EVM contracts to retrieve recent roots by timestamp.
+EIP-4788 also adds a Beacon roots contract at `0x000F3df6D732807Ef1319fB7B8bB8522d0Beac02`. A protocol-level system operation stores a root together with its timestamp in a fixed-size ring buffer, allowing EVM contracts to retrieve recent roots by timestamp.
 
 The mental model to remember is:
 
-\`\`\`text
+```text
 Parent Beacon block
         |
         v
@@ -252,7 +252,7 @@ EIP-4788 Beacon roots contract
         |
         v
 Root used to verify suitable consensus data
-\`\`\`
+```
 
 **The field itself is a commitment—not the data or proof.** Its significance is that it gives smart contracts a protocol-defined starting point for verifying selected facts about Ethereum's consensus layer.
 
