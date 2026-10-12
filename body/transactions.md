@@ -6,9 +6,9 @@
 
 An Ethereum execution block contains two major parts: a **header** and a **body**. The header identifies the block and commits cryptographically to important block data. The body contains the ordered transaction list and other execution-payload data specified by the active Ethereum fork.
 
-Transactions are the signed requests that ask Ethereum to perform state transitions. They can transfer ETH, call smart contracts, deploy contracts, publish blob-related commitments for rollups, or carry authorizations that let an externally owned account (EOA) delegate execution to code.
+Transactions are signed requests that ask Ethereum to perform state transitions. They can transfer ETH, call smart contracts, deploy contracts, publish blob-related commitments for rollups, or carry authorizations that let an externally owned account (EOA) delegate execution to code.
 
-> **Key idea:** the transaction list, the receipts produced by execution, and the resulting world state are different objects. The block header commits to them separately through transactionsRoot, receiptsRoot, and stateRoot.
+> **Key idea:** the transaction list, the receipts produced by execution, and the resulting world state are different objects. The block header commits to them separately through `transactionsRoot`, `receiptsRoot`, and `stateRoot`.
 
 ## 1. Where Do Transactions Live?
 
@@ -40,11 +40,11 @@ An Ethereum transaction is a signed request to perform an operation on the netwo
 
 - **Chain ID:** identifies the chain for which the transaction is intended and supports replay protection.
 - **Nonce:** the sender account's transaction sequence number.
-- **Destination (to):** the recipient address or contract. Some transaction types permit a null destination to request contract creation.
+- **Destination (`to`):** the recipient address or contract. Some transaction types permit a null destination to request contract creation.
 - **Value:** the ETH amount to transfer, denominated in wei.
-- **Input data (data or input):** arbitrary bytes, often containing a contract function selector and encoded arguments.
+- **Input data (`data` or `input`):** arbitrary bytes, often containing a contract function selector and encoded arguments.
 - **Gas limit:** the maximum execution gas the sender allows the transaction to consume.
-- **Fee fields:** legacy transactions use gasPrice; EIP-1559-style transactions use maxFeePerGas and maxPriorityFeePerGas.
+- **Fee fields:** legacy transactions use `gasPrice`; EIP-1559-style transactions use `maxFeePerGas` and `maxPriorityFeePerGas`.
 - **Signature:** proves authorization by the sender's key. The sender address is recovered from the signature; it is not ordinarily stored as a separate signed field in the serialized transaction.
 
 The field list varies with transaction type. Blob transactions add blob-fee fields and versioned blob hashes. Set-code transactions add an authorization list.
@@ -88,21 +88,19 @@ Therefore, **included** and **successful** are different statuses. Inclusion mea
 
 ### 3.3 Receipts
 
-After each transaction executes, Ethereum produces a receipt containing execution-result information such as status, cumulative gas used, logs, and a logs bloom filter. Receipts are committed through the header's receiptsRoot; they are not the transaction list itself.
+After each transaction executes, Ethereum produces a receipt containing execution-result information such as status, cumulative gas used, logs, and a logs bloom filter. Receipts are committed through the header's `receiptsRoot`; they are not the transaction list itself.
 
 ## 4. Ethereum Transaction Types
 
 Ethereum's transaction format has evolved over time. The typed transaction envelope introduced by [EIP-2718](https://eips.ethereum.org/EIPS/eip-2718) allows new formats to coexist with the original legacy format.
 
-The main transaction types relevant to modern Ethereum mainnet are:
-
 | Type | Standard | Name | Main purpose |
 |---|---|---|---|
 | Legacy (untyped) | Original format; replay protection improved by EIP-155 | Legacy transaction | ETH transfers, contract calls, and contract creation |
-| 0x01 | [EIP-2930](https://eips.ethereum.org/EIPS/eip-2930) | Access-list transaction | Explicitly lists addresses and storage keys expected to be accessed |
-| 0x02 | [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559) | Dynamic-fee transaction | Uses a base-fee-aware maximum fee and priority-fee cap |
-| 0x03 | [EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) | Blob transaction | Commits to blobs and pays for blob gas, primarily for rollup data availability |
-| 0x04 | [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) | Set-code transaction | Carries authorizations that let an EOA delegate execution to code |
+| `0x01` | [EIP-2930](https://eips.ethereum.org/EIPS/eip-2930) | Access-list transaction | Explicitly lists addresses and storage keys expected to be accessed |
+| `0x02` | [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559) | Dynamic-fee transaction | Uses a base-fee-aware maximum fee and priority-fee cap |
+| `0x03` | [EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) | Blob transaction | Commits to blobs and pays for blob gas, primarily for rollup data availability |
+| `0x04` | [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) | Set-code transaction | Carries authorizations that let an EOA delegate execution to code |
 
 Typed transactions include a type byte; the original legacy transaction does not begin with one of these type identifiers. The table describes the principal formats used by Ethereum execution, not every format that might exist on every EVM-compatible chain.
 
@@ -118,14 +116,14 @@ EIP-2930 added an access list: a list of addresses and storage keys that the tra
 
 EIP-1559 introduced a fee market with a base fee that changes with block demand. A type 2 transaction specifies:
 
-- **maxFeePerGas:** the maximum total price per unit of execution gas that the sender is willing to pay.
-- **maxPriorityFeePerGas:** the maximum priority fee per unit of gas offered to the block proposer.
+- **`maxFeePerGas`:** the maximum total price per unit of execution gas that the sender is willing to pay.
+- **`maxPriorityFeePerGas`:** the maximum priority fee per unit of gas offered to the block proposer.
 
-The effective gas price depends on the block's base fee and the transaction's fee caps. The base-fee portion is burned; the priority-fee portion is paid to the execution block's fee recipient under the protocol's rules. The sender does not necessarily pay the full maxFeePerGas cap.
+The effective gas price depends on the block's base fee and the transaction's fee caps. The base-fee portion is burned; the priority-fee portion is paid to the execution block's fee recipient under the protocol's rules. The sender does not necessarily pay the full `maxFeePerGas` cap.
 
 ### Type 3 — Blob transactions
 
-EIP-4844 introduced blob transactions to support rollup data availability with a fee market separate from ordinary EVM execution gas. A blob transaction includes fields such as maxFeePerBlobGas and blobVersionedHashes.
+EIP-4844 introduced blob transactions to support rollup data availability with a fee market separate from ordinary EVM execution gas. A blob transaction includes fields such as `maxFeePerBlobGas` and `blobVersionedHashes`.
 
 The blob bytes themselves are **not embedded as ordinary input data in the execution block body**. They are propagated as blob sidecars through Ethereum's blob data-availability mechanism. The transaction commits to versioned hashes of the blobs, while the sidecar carries the blob data and associated proof material.
 
@@ -133,7 +131,7 @@ Blob transactions pay separate blob-gas fees in addition to normal execution gas
 
 ### Type 4 — Set-code transactions
 
-EIP-7702 introduced set-code transactions. They contain an authorizationList of signed authorization tuples. Processing an authorization can set a delegation indicator on an EOA, allowing calls to that account to execute code from a designated address in the EOA's context.
+EIP-7702 introduced set-code transactions. They contain an `authorizationList` of signed authorization tuples. Processing an authorization can set a delegation indicator on an EOA, allowing calls to that account to execute code from a designated address in the EOA's context.
 
 This mechanism is relevant to smart-account experiences and transaction-batching designs. It does not make an EOA identical to a conventional contract account in every respect. Applications must account for authorization scope, chain ID, nonce, and the security properties of delegated code.
 
@@ -163,7 +161,7 @@ Serialization matters because the transaction hash and signature rules depend on
 
 ## 6. What Is transactionsRoot?
 
-The header's **transactionsRoot** is the root hash of a Merkle Patricia Trie containing the transactions in that block. It commits to the exact ordered transaction list, not every transaction ever submitted to Ethereum.
+The header's **`transactionsRoot`** is the root hash of a Merkle Patricia Trie containing the transactions in that block. It commits to the exact ordered transaction list, not every transaction ever submitted to Ethereum.
 
 ~~~text
 Ordered transaction list
@@ -187,7 +185,7 @@ The root is deterministic: the same ordered list of correctly serialized transac
 
 ### Why commit to the transaction list in the header?
 
-A block header is a compact commitment to important block data. Instead of repeating the full transaction list inside the header, Ethereum stores the trie root. A verifier can reconstruct the transaction trie from a supplied list and compare its root with transactionsRoot.
+A block header is a compact commitment to important block data. Instead of repeating the full transaction list inside the header, Ethereum stores the trie root. A verifier can reconstruct the transaction trie from a supplied list and compare its root with `transactionsRoot`.
 
 This is useful for block validation, transaction inclusion proofs, light-client designs, and systems that need to establish that a transaction belongs to a particular block.
 
@@ -195,9 +193,9 @@ This is useful for block validation, transaction inclusion proofs, light-client 
 
 | Header field | What it commits to |
 |---|---|
-| **transactionsRoot** | The ordered transaction list in this block |
-| **receiptsRoot** | The ordered transaction receipts for this block |
-| **stateRoot** | The resulting Ethereum world state after block processing |
+| **`transactionsRoot`** | The ordered transaction list in this block |
+| **`receiptsRoot`** | The ordered transaction receipts for this block |
+| **`stateRoot`** | The resulting Ethereum world state after block processing |
 
 Transactions are inputs to execution. Receipts describe execution outcomes. The state root commits to resulting account state. These commitments complement one another and cannot be substituted for one another.
 
@@ -212,9 +210,9 @@ Receipt information includes:
 - **Logs bloom:** a probabilistic filter summarizing log addresses and topics.
 - **Logs:** events emitted during successful execution.
 
-Events are commonly used by applications to index contract activity. For example, a token transfer may emit a Transfer event. Logs from an execution that reverts are discarded along with its other EVM-level effects.
+Events are commonly used by applications to index contract activity. For example, a token transfer may emit a `Transfer` event. Logs from an execution that reverts are discarded along with its other EVM-level effects.
 
-The ordered receipt list is committed to through receiptsRoot. The receipt at each position corresponds to the transaction at the same position, but receiptsRoot is not derived from transactionsRoot.
+The ordered receipt list is committed to through `receiptsRoot`. The receipt at each position corresponds to the transaction at the same position, but `receiptsRoot` is not derived from `transactionsRoot`.
 
 ~~~text
 Transaction at index i
@@ -242,7 +240,7 @@ Final state after block processing
 
 A transaction hash is the cryptographic hash of the transaction's canonical serialized representation. For a typed transaction, its typed envelope is included in that representation.
 
-The hash identifies the signed transaction data, not its eventual execution result. A hash alone does not prove that the transaction was included in a block or succeeded. To establish inclusion, a verifier needs block context and a proof—or trusted validation—under that block's transactionsRoot. To establish execution outcome, the corresponding receipt and its commitment under receiptsRoot are relevant.
+The hash identifies the signed transaction data, not its eventual execution result. A hash alone does not prove that the transaction was included in a block or succeeded. To establish inclusion, a verifier needs block context and a proof—or trusted validation—under that block's `transactionsRoot`. To establish execution outcome, the corresponding receipt and its commitment under `receiptsRoot` are relevant.
 
 A transaction can also be visible in a node's transaction pool before inclusion. Transaction-pool presence does not guarantee inclusion: transactions may be delayed, replaced, dropped, or become invalid as chain state changes.
 
@@ -278,7 +276,7 @@ When implementing infrastructure or verification logic, use the relevant executi
 
 ## Conclusion
 
-Transactions are the ordered execution requests inside an Ethereum block body. They describe the operations Ethereum attempts to apply to its state, while receipts record outcomes and logs. The header commits separately to the transaction list through transactionsRoot, to receipts through receiptsRoot, and to resulting world state through stateRoot.
+Transactions are the ordered execution requests inside an Ethereum block body. They describe the operations Ethereum attempts to apply to its state, while receipts record outcomes and logs. The header commits separately to the transaction list through `transactionsRoot`, to receipts through `receiptsRoot`, and to resulting world state through `stateRoot`.
 
 Ethereum's original format has evolved through typed transactions for access lists, dynamic fees, blobs, and set-code authorizations. Despite these additions, the core model remains:
 
