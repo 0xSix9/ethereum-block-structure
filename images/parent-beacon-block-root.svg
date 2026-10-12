@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+<title id="title">Parent Beacon Block Root in Ethereum</title>
+<desc id="desc">Illustrates that parentHash points to the parent execution block while parentBeaconBlockRoot commits to the parent beacon block. The root is included in the execution header and made available through the EIP-4788 beacon roots system contract with a timestamp-indexed ring buffer.</desc>
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#061328"/><stop offset="1" stop-color="#0b2440"/></linearGradient>
+ <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1ed6f4"/><stop offset="1" stop-color="#4388ff"/></linearGradient>
+ <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#32d6f4"/></marker>
+ <style>
+ .title{font:700 34px Arial,sans-serif;fill:#f2f7ff;letter-spacing:1px}
+ .sub{font:17px Arial,sans-serif;fill:#a9c4e3}
+ .head{font:700 20px Arial,sans-serif;fill:#f2f7ff}
+ .mono{font:17px 'Courier New',monospace;fill:#b6f4ff}
+ .text{font:16px Arial,sans-serif;fill:#c1d7ed}
+ .small{font:14px Arial,sans-serif;fill:#90b0d1}
+ .panel{fill:#091a30;stroke:#2c6794;stroke-width:2}
+ .arr{stroke:#32d6f4;stroke-width:3;fill:none;marker-end:url(#arrow)}
+ </style>
+</defs>
+<rect width="1200" height="760" rx="24" fill="url(#bg)"/>
+<text x="48" y="62" class="title">PARENT BEACON BLOCK ROOT</text>
+<text x="50" y="95" class="sub">EIP-4788 connects Ethereum's consensus history with EVM execution</text>
+
+<rect x="46" y="135" width="525" height="228" rx="18" class="panel"/>
+<text x="72" y="174" class="head">TWO DIFFERENT PARENT REFERENCES</text>
+<rect x="70" y="195" width="477" height="62" rx="10" fill="#0b2947" stroke="#2c6794"/>
+<text x="90" y="222" class="mono">parentHash</text>
+<text x="310" y="222" class="text">Parent execution block</text>
+<text x="90" y="244" class="small">Execution-layer chain linkage</text>
+<rect x="70" y="272" width="477" height="68" rx="10" fill="#083147" stroke="#1ed6f4" stroke-width="2"/>
+<text x="90" y="300" class="mono">parentBeaconBlockRoot</text>
+<text x="90" y="324" class="small">32-byte hash-tree root of parent Beacon block</text>
+
+<rect x="628" y="135" width="526" height="228" rx="18" class="panel"/>
+<text x="654" y="174" class="head">EXECUTION BLOCK HEADER</text>
+<rect x="654" y="195" width="474" height="125" rx="12" fill="#0b2947" stroke="#2c6794"/>
+<text x="678" y="226" class="mono">...</text>
+<text x="678" y="254" class="mono">blob_gas_used</text>
+<text x="678" y="282" class="mono">excess_blob_gas</text>
+<rect x="886" y="293" width="220" height="0" fill="none"/>
+<text x="678" y="309" class="mono">parent_beacon_block_root</text>
+<path d="M571 246 H615" class="arr"/>
+
+<text x="48" y="410" class="head">HOW EIP-4788 MAKES THE ROOT QUERYABLE</text>
+<rect x="48" y="440" width="240" height="122" rx="16" class="panel"/>
+<text x="70" y="476" class="head">New execution block</text>
+<text x="70" y="506" class="text">Header contains root</text>
+<text x="70" y="532" class="small">and timestamp</text>
+<path d="M290 502 H332" class="arr"/>
+<rect x="344" y="440" width="264" height="122" rx="16" fill="#101f37" stroke="#ffbd4b" stroke-width="2"/>
+<text x="366" y="476" class="head">System operation</text>
+<text x="366" y="505" class="text">Writes root + timestamp</text>
+<text x="366" y="532" class="small">before user transactions</text>
+<path d="M610 502 H652" class="arr"/>
+<rect x="664" y="440" width="260" height="122" rx="16" class="panel"/>
+<text x="686" y="476" class="head">Beacon roots contract</text>
+<text x="686" y="505" class="mono">0x000F...Beac02</text>
+<text x="686" y="532" class="small">Timestamp-indexed ring buffer</text>
+<path d="M926 502 H968" class="arr"/>
+<rect x="980" y="440" width="174" height="122" rx="16" fill="#083147" stroke="#1ed6f4" stroke-width="2"/>
+<text x="1000" y="476" class="head">Smart contract</text>
+<text x="1000" y="505" class="text">queries a root</text>
+<text x="1000" y="532" class="small">by timestamp</text>
+
+<rect x="48" y="597" width="1106" height="104" rx="16" fill="#07162c" stroke="#2c6794" stroke-width="2"/>
+<text x="72" y="633" class="head">IMPORTANT</text>
+<text x="72" y="663" class="text">The field stores a commitment, not the full Beacon block or its state.</text>
+<text x="72" y="687" class="small">To prove a consensus fact, a contract or verifier still needs the relevant data and a valid proof against this root.</text>
+</svg>
