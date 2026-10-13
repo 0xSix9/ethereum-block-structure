@@ -27,6 +27,7 @@ Every Ethereum block consists of two main parts: the **Header** and the **Body**
 18. [Blob Gas Used](./header/blob-gas-used.md)
 19. [Excess Blob Gas](./header/excess-blob-gas.md)
 20. [Parent Beacon Block Root](./header/parent-beacon-block-root.md)
+21. [Requests Hash](./header/requests-hash.md)
 
 # Body
 ![body](https://github.com/0xSix9/ethereum-block-structure/blob/8cbb623eafd30806e287e0e902a8884da83a0583/images/body.png)
