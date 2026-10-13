@@ -1,4 +1,4 @@
-# Understanding \`requestsHash\` in the Ethereum Block Header
+# Understanding `requestsHash` in the Ethereum Block Header
 
 ![How EIP-7685 collects typed requests and computes the requestsHash commitment](../images/requests-hash.svg)
 
@@ -6,20 +6,20 @@
 
 Ethereum's execution layer can generate requests that the consensus layer must process. Examples include validator deposits, execution-triggered withdrawals, and validator consolidations. Before EIP-7685, adding new kinds of execution-layer requests could require more bespoke protocol plumbing.
 
-**EIP-7685: General Purpose Execution Layer Requests** introduces a common framework for these messages. Its block-header field, \`requestsHash\`, commits to the request data associated with a block. It lets the consensus layer check that the requests it receives match the requests committed to by the execution layer.
+**EIP-7685: General Purpose Execution Layer Requests** introduces a common framework for these messages. Its block-header field, `requestsHash`, commits to the request data associated with a block. It lets the consensus layer check that the requests it receives match the requests committed to by the execution layer.
 
-> **Key idea:** \`requestsHash\` is a 32-byte cryptographic commitment to execution-layer requests. It is not the requests themselves, and it is not a hash of the entire block body.
+> **Key idea:** `requestsHash` is a 32-byte cryptographic commitment to execution-layer requests. It is not the requests themselves, and it is not a hash of the entire block body.
 
-## 1. What Is \`requestsHash\`?
+## 1. What Is `requestsHash`?
 
-\`requestsHash\` is a field in the Ethereum execution block header introduced by **EIP-7685** and activated on Ethereum mainnet as part of the **Pectra upgrade in May 2025**.
+`requestsHash` is a field in the Ethereum execution block header introduced by **EIP-7685** and activated on Ethereum mainnet as part of the **Pectra upgrade in May 2025**.
 
 Its essential properties are:
 
-- **Size:** 32 bytes (\`bytes32\`).
+- **Size:** 32 bytes (`bytes32`).
 - **Purpose:** commits to the block's collected execution-layer requests.
 - **Hash function:** SHA-256, including a two-stage hashing process.
-- **Specification name:** \`requests_hash\` in the EIP and execution specifications; \`requestsHash\` in the common JSON-RPC camel-case representation.
+- **Specification name:** `requests_hash` in the EIP and execution specifications; `requestsHash` in the common JSON-RPC camel-case representation.
 
 A simplified view of the later header fields is:
 
@@ -36,7 +36,7 @@ This is a partial view, not the complete serialized header. Ethereum's header de
 
 ## 2. What Is an Execution-Layer Request?
 
-EIP-7685 defines a request blob as a one-byte \`request_type\` followed by an opaque byte array called \`request_data\`:
+EIP-7685 defines a request blob as a one-byte `request_type` followed by an opaque byte array called `request_data`:
 
 ~~~text
 request = request_type || request_data
@@ -58,7 +58,7 @@ An execution-layer request should not be confused with an ordinary user transact
 
 The execution and consensus layers have distinct responsibilities. The execution layer processes transactions and derives request data; the consensus layer applies the relevant consensus rules to those requests.
 
-The header does not need to duplicate every request byte. Instead, \`requestsHash\` acts as a compact commitment:
+The header does not need to duplicate every request byte. Instead, `requestsHash` acts as a compact commitment:
 
 ~~~text
 Execution Layer
@@ -81,13 +81,13 @@ Check that the request data matches the header commitment
 
 If the request data used by the consensus layer does not produce the committed value, the mismatch can be detected during block validation. The hash does not, by itself, make a request valid or authorize an action; the relevant protocol rules still determine how each request is validated and processed.
 
-## 4. How Is \`requestsHash\` Computed?
+## 4. How Is `requestsHash` Computed?
 
-The value is computed using SHA-256 in two stages. The details matter: it is **not** simply \`SHA256(all request bytes concatenated together)\`, and it is not Keccak-256.
+The value is computed using SHA-256 in two stages. The details matter: it is **not** simply `SHA256(all request bytes concatenated together)`, and it is not Keccak-256.
 
 ### Step 1 — Order request blobs by type
 
-The request blobs must be arranged in ascending order of \`request_type\`. Ordering by type makes it possible for the layers to reconstruct the same canonical sequence.
+The request blobs must be arranged in ascending order of `request_type`. Ordering by type makes it possible for the layers to reconstruct the same canonical sequence.
 
 EIP-7685 does not define ordering between individual request objects inside the opaque data for a particular type. That detail belongs to the specification for that request type.
 
@@ -115,7 +115,7 @@ Concatenate those 32-byte digests in the required order, then compute SHA-256 ov
 requestsHash = SHA256(h₁ || h₂ || ... || hₙ)
 ~~~
 
-The result is the 32-byte value stored in the block header. If there is no request data, the intermediate sequence is empty and the result is \`SHA256(empty bytes)\`.
+The result is the 32-byte value stored in the block header. If there is no request data, the intermediate sequence is empty and the result is `SHA256(empty bytes)`.
 
 The EIP's pseudocode expresses the same process:
 
@@ -136,7 +136,7 @@ This is illustrative pseudocode for the commitment algorithm; production clients
 
 ## 5. What Does the Hash Actually Guarantee?
 
-\`requestsHash\` commits to the ordered, non-empty request blobs under the rules above. A participant that has the request data can recompute the commitment and compare it with the header field.
+`requestsHash` commits to the ordered, non-empty request blobs under the rules above. A participant that has the request data can recompute the commitment and compare it with the header field.
 
 It is useful to keep these distinctions in mind:
 
@@ -149,25 +149,25 @@ It is useful to keep these distinctions in mind:
 
 Ethereum has several fields that look like hashes but commit to different data:
 
-- \`transactionsRoot\` commits to the block's transaction trie.
-- \`receiptsRoot\` commits to the transaction-receipt trie.
-- \`withdrawalsRoot\` commits to the block's withdrawals structure.
-- \`parentBeaconBlockRoot\` references the parent Beacon block's root.
-- **\`requestsHash\` commits to the ordered request blobs defined by EIP-7685.**
+- `transactionsRoot` commits to the block's transaction trie.
+- `receiptsRoot` commits to the transaction-receipt trie.
+- `withdrawalsRoot` commits to the block's withdrawals structure.
+- `parentBeaconBlockRoot` references the parent Beacon block's root.
+- **`requestsHash` commits to the ordered request blobs defined by EIP-7685.**
 
 These fields are not interchangeable. Each one binds a different piece of protocol data to the execution block header.
 
 ## 7. Why Should Smart-Contract and Ethereum Developers Care?
 
-Even if you are not implementing a consensus client, \`requestsHash\` is worth understanding when reading block headers, exploring execution-client code, building indexers, or studying how Ethereum upgrades connect the execution and consensus layers.
+Even if you are not implementing a consensus client, `requestsHash` is worth understanding when reading block headers, exploring execution-client code, building indexers, or studying how Ethereum upgrades connect the execution and consensus layers.
 
 For developers working on clients and protocol infrastructure, the critical implementation details are the request-type ordering, the exclusion of type-only empty entries, the two-stage SHA-256 calculation, and the active fork's request definitions. A mistake in any of these details can cause the computed commitment to disagree with the one in the header.
 
-For ordinary smart-contract developers, the main takeaway is architectural: the EVM does not gain a direct \`requestsHash\` opcode or automatic access to arbitrary request data. The field is part of the block-header protocol, and request processing is coordinated across Ethereum's layers.
+For ordinary smart-contract developers, the main takeaway is architectural: the EVM does not gain a direct `requestsHash` opcode or automatic access to arbitrary request data. The field is part of the block-header protocol, and request processing is coordinated across Ethereum's layers.
 
 ## Summary
 
-\`requestsHash\` is the EIP-7685, 32-byte SHA-256 commitment to the execution-layer request blobs associated with a block. Request blobs are ordered by type; type-only empty entries are skipped; each remaining blob is hashed; and the concatenation of those digests is hashed again. This gives Ethereum a general-purpose way to commit to execution-triggered requests without adding a new header field for every request type.
+`requestsHash` is the EIP-7685, 32-byte SHA-256 commitment to the execution-layer request blobs associated with a block. Request blobs are ordered by type; type-only empty entries are skipped; each remaining blob is hashed; and the concatenation of those digests is hashed again. This gives Ethereum a general-purpose way to commit to execution-triggered requests without adding a new header field for every request type.
 
 ## References
 
