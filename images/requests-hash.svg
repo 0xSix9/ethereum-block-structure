@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fbff"/>
+      <stop offset="100%" stop-color="#edf3fb"/>
+    </linearGradient>
+    <linearGradient id="navy" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0b1e36"/>
+      <stop offset="100%" stop-color="#173b62"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#4b6b8c"/>
+    </marker>
+    <style>
+      .title{font:700 30px Arial,Helvetica,sans-serif;fill:#fff}
+      .subtitle{font:16px Arial,Helvetica,sans-serif;fill:#dbe9f8}
+      .h{font:700 21px Arial,Helvetica,sans-serif;fill:#142b45}
+      .p{font:17px Arial,Helvetica,sans-serif;fill:#334a63}
+      .code{font:16px 'SFMono-Regular',Consolas,monospace;fill:#17385b}
+      .small{font:15px Arial,Helvetica,sans-serif;fill:#516780}
+      .num{font:700 17px Arial,Helvetica,sans-serif;fill:#fff}
+    </style>
+  </defs>
+  <rect width="1400" height="820" rx="20" fill="url(#bg)"/>
+  <rect x="1" y="1" width="1398" height="818" rx="19" fill="none" stroke="#d4dfec" stroke-width="2"/>
+  <path d="M20 1 H1380 Q1399 1 1399 20 V130 H1 V20 Q1 1 20 1Z" fill="url(#navy)"/>
+  <text x="52" y="55" class="title">How Ethereum Computes requestsHash</text>
+  <text x="53" y="88" class="subtitle">EIP-7685 · A 32-byte commitment to execution-layer request data</text>
+
+  <rect x="54" y="164" width="1292" height="114" rx="16" fill="#fff" stroke="#cad8e8" stroke-width="2"/>
+  <circle cx="87" cy="198" r="18" fill="#2b5d8d"/><text x="87" y="204" class="num" text-anchor="middle">1</text>
+  <text x="119" y="204" class="h">Collect typed request blobs</text>
+  <text x="82" y="235" class="p">Each blob begins with a one-byte request_type followed by opaque request_data.</text>
+  <text x="82" y="260" class="code">[type byte | request_data]   ·   [type byte | request_data]   ·   ...</text>
+
+  <path d="M700 279 V315" stroke="#4b6b8c" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <rect x="54" y="327" width="1292" height="103" rx="16" fill="#fff" stroke="#cad8e8" stroke-width="2"/>
+  <circle cx="87" cy="361" r="18" fill="#2b5d8d"/><text x="87" y="367" class="num" text-anchor="middle">2</text>
+  <text x="119" y="367" class="h">Canonicalize the list</text>
+  <text x="82" y="397" class="p">Order by request_type in ascending order. Skip empty entries that contain only the type byte.</text>
+
+  <path d="M700 431 V465" stroke="#4b6b8c" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <rect x="54" y="477" width="619" height="119" rx="16" fill="#fff" stroke="#cad8e8" stroke-width="2"/>
+  <circle cx="87" cy="511" r="18" fill="#2b5d8d"/><text x="87" y="517" class="num" text-anchor="middle">3</text>
+  <text x="119" y="517" class="h">Hash each non-empty blob</text>
+  <text x="83" y="550" class="code">h₁ = SHA256(request₁)</text>
+  <text x="83" y="576" class="code">h₂ = SHA256(request₂)  ...</text>
+
+  <path d="M673 538 H724" stroke="#4b6b8c" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <rect x="736" y="477" width="610" height="119" rx="16" fill="#fff" stroke="#cad8e8" stroke-width="2"/>
+  <circle cx="769" cy="511" r="18" fill="#2b5d8d"/><text x="769" y="517" class="num" text-anchor="middle">4</text>
+  <text x="801" y="517" class="h">Hash the concatenated digests</text>
+  <text x="765" y="550" class="code">requestsHash = SHA256(h₁ || h₂ || ...)</text>
+  <text x="765" y="576" class="small">If there is no request data: SHA256(empty bytes).</text>
+
+  <path d="M1041 597 V631" stroke="#4b6b8c" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <rect x="352" y="643" width="696" height="105" rx="16" fill="#e2efff" stroke="#83acd7" stroke-width="2"/>
+  <text x="700" y="680" class="h" text-anchor="middle">Execution block header</text>
+  <text x="700" y="712" class="code" text-anchor="middle">requestsHash: bytes32  (32 bytes)</text>
+  <text x="700" y="735" class="small" text-anchor="middle">Consensus-side validation can recompute and compare the commitment.</text>
+  <text x="54" y="790" class="small">Important: the header stores the commitment, not the full request payloads.</text>
+</svg>
